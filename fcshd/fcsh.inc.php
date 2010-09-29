@@ -165,26 +165,46 @@ function fcsh_socket_send($socket, $bytes)
   } 
 }
 
-function fcsh_socket_recv($socket)
+function fcsh_socket_recv($socket, $size)
+{
+  if(!is_resource($socket))
+    throw new Exception("Passed socket is not a valid resource");
+  $bytes = '';
+  while($size) 
+  {
+    $read = socket_read($socket, $size);
+    if($read === false)
+      throw new Exception('Failed read from socket! Socket last error: '.socket_strerror(socket_last_error($socket)));
+    else if($read === "") 
+      throw new Exception('Failed read from socket! No more data to read.');
+    $bytes .= $read;
+    $size -= strlen($read);
+  }
+  return $bytes;
+}
+
+function fcsh_socket_recv_response($socket)
 {
   if(!is_resource($socket))
     throw new Exception("Passed socket is not a valid resource");
 
-  $bytes = '';
-  while(true) 
-  {
-    $read = socket_read($socket, 1024);
-    if($read === false)
-      throw new Exception('Failed read from socket! Socket last error: '.socket_strerror(socket_last_error($socket)));
-    else if($read === "") 
-      return $bytes;
-    
-    $bytes .= $read;
-    if(strpos($bytes, "(fcsh) ") !== false)
-      break;
-  }
-  $items = explode(" ", $bytes, 2);
-  return array($items[0]*1, $items[1]);
+  $size = fcsh_unpack_uint32(fcsh_socket_recv($socket, 4));
+  $bytes = fcsh_socket_recv($socket, $size);
+  $error_code = fcsh_unpack_uint32(substr($bytes, 0, 4));
+  $rest = substr($bytes, 4);
+
+  return array($error_code, $rest);
+}
+
+function fcsh_unpack_uint32($str)
+{
+  $arr = unpack('Nv', $str);
+  return ($arr['v'] < 0 ? sprintf('%u', $arr['v'])*1.0 : $arr['v']);
+}
+
+function fcsh_pack_uint32($n)
+{
+  return pack('N', $n);
 }
 
 function fcsh_normalize_path($path, $unix=null)

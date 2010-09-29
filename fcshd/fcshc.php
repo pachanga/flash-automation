@@ -62,9 +62,9 @@ $socket = fcsh_new_socket($HOST, $PORT);
 $fcsh_cmd = implode(" ", $fcsh_args);
 fcsh_socket_send($socket, "$fcsh_cmd\n");
 
-list($error, $resp) = fcsh_socket_recv($socket);
-
-if($error != 0)
-  throw new Exception("fcsh command execution error($error): $resp");
+list($error, $resp) = fcsh_socket_recv_response($socket);
 
 echo $resp;
+
+exit($error);
+

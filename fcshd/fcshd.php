@@ -379,14 +379,15 @@ function fcsh_process_client_request(fcshProcess $fcsh, $cmd, $socket)
   if($target_hash && preg_match("~Assigned (\d+) as the compile target id~", $result, $m))
     $FCSH_COMPILE_TARGETS[$target_hash] = $m[1];
 
-  $error = strpos($errors, "Error: ") !== false;
+  $error_code = strpos($errors, "Error: ") !== false;
 
   echo "======= FCSH BEGIN =======\n";
   echo "$cmd\n";
   echo "$result\n";
   echo "$errors\n";
   echo "======= FCSH END =======\n";
-  socket_write($socket, "$error $result\n$errors");
+  $response = fcsh_pack_uint32($error_code) . "$result\n$errors";
+  socket_write($socket, fcsh_pack_uint32(strlen($response)) . $response);
 }
 
 $HOST = fcsh_autoguess_host();
