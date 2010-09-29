@@ -1,0 +1,10 @@
+fcshd - a cross-platform convenience wrapper around fcsh shell.
+
+fcshd is written in PHP and consists of a simple server and a client.
+
+fcshd supports all fcsh commands and also adds its own mxmlcsmart command which
+can be used instead of mxmlc/compile commands. In fcsh one has to initially
+create the compile target by invoking the mxmlc command, remember the compile
+target id and later use this id with compile command for incremental builds.
+The mxmlcsmart command does all of this hassle for you, just use it for
+painfree incremental builds.
