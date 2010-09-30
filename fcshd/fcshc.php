@@ -8,8 +8,8 @@ function usage($extra = '')
 	$txt = <<<EOD
 Usage:
   fcshc.php [--host=host] [--port=port] [--noauto=1] -- <fcsh cmd>
-  --host     - fcshd host
-  --port     - fcshd port
+  --host     - fcshd host(127.0.0.1 by default)
+  --port     - fcshd port(8067 by default)
   --noauto   - don't try to spawn the fcshd daemon automatically
   <fcsh cmd> - command passed to fcsh(see its documentation),
                NOTE: additional mxmlcsmart command is supported, 
