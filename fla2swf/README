@@ -1,0 +1,7 @@
+fla2swf is a command line utility written in PHP which can be used in a batch
+mode for publishing .fla files to .swf. 
+
+fla2swf consists of the client and server parts. The cool thing behind this
+utility is the fact the client can be run on the box without Flash IDE
+installed(even on the *nix box). Of course, you will need the server to be run
+on the workstation with the Flash authoring environment installed.
